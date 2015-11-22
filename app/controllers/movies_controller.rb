@@ -32,8 +32,21 @@ class MoviesController < ApplicationController
       redirect_to :sort => sort, :ratings => @selected_ratings and return
     end
     #@movies = Movie.find_all_by_rating(@selected_ratings.keys, ordering)
-    @movies = Movie.where(@selected_ratings.keys).order(sort)
+    #@movies = Movie.find_by_rating(@selected_ratings.keys).order(sort)
+    #@movies = Movie.where("rating", @selected_ratings.keys)
+    if @selected_ratings == {}
+      @movies = Movie.order(sort)
+    else
+      cond = ""
+      @selected_ratings.each do |key, value|
+        cond = cond + " OR " unless cond == ''
+        cond = cond + "rating='#{key}'"
+      end
+      @movies = Movie.where(cond).order(sort)
+    end
+    
   end
+  
   def new
     # default: render 'new' template
   end
