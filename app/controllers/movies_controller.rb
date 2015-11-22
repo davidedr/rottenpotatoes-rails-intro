@@ -19,8 +19,9 @@ class MoviesController < ApplicationController
       ordering, @date_header = {:order => :release_date}, 'hilite'
     end
     @all_ratings = Movie.all_ratings
+    logger.debug("@all_ratings: #{@all_ratings}")
     @selected_ratings = params[:ratings] || session[:ratings] || {}
-
+    logger.debug("@selected_ratings: #{@selected_ratings}")
     if params[:sort] != session[:sort]
       session[:sort] = sort
       redirect_to :sort => sort, :ratings => @selected_ratings and return
@@ -31,9 +32,6 @@ class MoviesController < ApplicationController
       session[:ratings] = @selected_ratings
       redirect_to :sort => sort, :ratings => @selected_ratings and return
     end
-    #@movies = Movie.find_all_by_rating(@selected_ratings.keys, ordering)
-    #@movies = Movie.find_by_rating(@selected_ratings.keys).order(sort)
-    #@movies = Movie.where("rating", @selected_ratings.keys)
     if @selected_ratings == {}
       @movies = Movie.order(sort)
     else
